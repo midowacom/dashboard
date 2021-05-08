@@ -1,6 +1,8 @@
 <?php
 namespace Base;
+use BadMethodCallException;
 abstract class Controller{
+
 	protected $middleware = [];
 
 	public function middleware($middleware, array $options = [])
@@ -16,5 +18,17 @@ abstract class Controller{
     public function getMiddleware()
     {
         return $this->middleware;
+    }
+
+    public function callAction($method, $parameters)
+    {
+        return $this->{$method}($parameters);
+    }
+
+    public function __call($method, $parameters)
+    {
+        throw new BadMethodCallException(sprintf(
+            'Method %s::%s does not exist.', static::class, $method
+        ));
     }
 }
